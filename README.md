@@ -48,6 +48,10 @@ Uses Google Translate's unofficial endpoint (`translate.googleapis.com`), with a
 
 ## 注意 / Notes
 
+- 無保証・無サポート
+
+
+  No warranty or support
 - 非公式APIを使用しているため、Google側の仕様変更により動作しなくなる可能性がある
 
   Relies on an unofficial API and may break if Google changes its response format
