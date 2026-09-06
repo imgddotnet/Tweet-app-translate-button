@@ -159,7 +159,7 @@
     LANGS.forEach(([code, label]) => {
       const opt = document.createElement('option');
       opt.value = code;
-      opt.textContent = '投稿翻訳先: ' + label;
+      opt.textContent = 'Translate to: ' + label;
       if (code === getComposeLang()) opt.selected = true;
       composeSel.appendChild(opt);
     });
