@@ -6,8 +6,8 @@ A Tampermonkey userscript that adds translate buttons to tweets and the compose 
 
 ## インストール方法 / Installation
 
-1. TampermonkeyをSafariに導入(App Store)
-   Install Tampermonkey for Safari (App Store)
+1. Tampermonkeyをwebブラウザに導入
+   Install Tampermonkey for your web browser
 2. Tampermonkeyメニュー→「新規スクリプトを追加」
    Tampermonkey menu → "Create a new script"
 3. `tweet-app-translate.user.js` の内容を貼り付けて保存(Cmd+S)
