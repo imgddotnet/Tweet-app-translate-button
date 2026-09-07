@@ -21,12 +21,12 @@ A Tampermonkey userscript that adds translate buttons to tweets and the compose 
 
 ## 使い方 / Usage
 
-- 各ツイート本文下の「🌐 翻訳」ボタンを押すと、選択言語に翻訳して表示(再度押すと非表示)
+- 各ツイート本文下の「🌐 Show translation」ボタンを押すと、選択言語に翻訳して表示(再度押すと非表示)
 
-  Click the "🌐 翻訳" button under any tweet to show a translation in your selected language (click again to hide)
-- 投稿欄の「🌐 翻訳を挿入」ボタンを押すと翻訳文が下に表示され、それをクリックすると入力欄末尾に挿入
+  Click the "🌐 Show translation" button under any tweet to show a translation in your selected language (click again to hide)
+- 投稿欄の「🌐 Insert translation」ボタンを押すと翻訳文が下に表示され、それをクリックすると入力欄末尾に挿入
 
-  In the compose box, click "🌐 翻訳を挿入" to preview a translation below the input; click that preview to insert it at the end of your draft
+  In the compose box, click "🌐 Insert translation" to preview a translation below the input; click that preview to insert it at the end of your draft
 - 画面上部(Who to followの上)にある2つのセレクトで言語を切替
 
   Two dropdowns appear above "Who to follow":
