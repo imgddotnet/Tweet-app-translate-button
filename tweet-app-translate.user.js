@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tweet.app Translate Button
 // @namespace    imgd.net
-// @version      2.0
+// @version      2.1
 // @description  各ツイートに翻訳ボタンを追加し、選択言語へワンクリック翻訳
 // @match        https://app.tweet.app/*
 // @grant        GM_setValue
@@ -194,7 +194,7 @@
 
       const btn = document.createElement('div');
       btn.className = 'tt-translate-btn';
-      btn.textContent = '🌐 翻訳';
+      btn.textContent = '🌐 Translate';
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -285,13 +285,13 @@
               console.error('[TT翻訳] fallback失敗', status2, detail2);
               onFail(
                 status2 === 429
-                  ? 'レート制限中(しばらく待ってから再試行してください)'
+                  ? 'Rate limited — please wait a moment and try again'
                   : 'HTTP ' + status2
               );
             }
           );
         } else {
-          onFail(status === 'parse' ? '解析失敗' : status === 'network' ? '通信エラー' : status === 'timeout' ? 'タイムアウト' : 'HTTP ' + status);
+          onFail(status === 'parse' ? 'Parse error' : status === 'network' ? 'Network error' : status === 'timeout' ? 'Timeout' : 'HTTP ' + status);
         }
       }
     );
@@ -304,7 +304,7 @@
       return;
     }
     const originalLabel = btn.textContent;
-    btn.textContent = '🌐 翻訳中...';
+    btn.textContent = '🌐 Translating...';
     const lang = getLang();
 
     callTranslateApi(
@@ -321,7 +321,7 @@
         btn.textContent = originalLabel;
         const div = document.createElement('div');
         div.className = 'tt-translate-result';
-        div.textContent = '⚠️ 翻訳失敗: ' + errMsg;
+        div.textContent = '⚠️ Translation failed: ' + errMsg;
         btn.insertAdjacentElement('afterend', div);
       }
     );
@@ -349,7 +349,7 @@
 
       const btn = document.createElement('div');
       btn.className = 'tt-compose-btn';
-      btn.textContent = '🌐 翻訳を挿入';
+      btn.textContent = '🌐 Insert translation';
 
       let resultEl = null;
 
@@ -361,7 +361,7 @@
         if (!text) return;
 
         const originalLabel = btn.textContent;
-        btn.textContent = '🌐 翻訳中...';
+        btn.textContent = '🌐 Translating...';
         const lang = getComposeLang();
 
         callTranslateApi(
@@ -372,10 +372,12 @@
             if (!resultEl) {
               resultEl = document.createElement('div');
               resultEl.className = 'tt-compose-result';
-              resultEl.title = 'クリックで入力欄に挿入';
+              resultEl.title = 'Click to insert into the compose box';
               btn.insertAdjacentElement('afterend', resultEl);
               resultEl.addEventListener('click', () => {
                 insertTranslationIntoCompose(el, resultEl.textContent);
+                resultEl.remove();
+                resultEl = null;
               });
             }
             resultEl.textContent = translated;
@@ -387,7 +389,7 @@
               resultEl.className = 'tt-compose-result';
               btn.insertAdjacentElement('afterend', resultEl);
             }
-            resultEl.textContent = '⚠️ 翻訳失敗: ' + errMsg;
+            resultEl.textContent = '⚠️ Translation failed: ' + errMsg;
           }
         );
       });
