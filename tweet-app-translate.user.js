@@ -194,7 +194,7 @@
 
       const btn = document.createElement('div');
       btn.className = 'tt-translate-btn';
-      btn.textContent = '🌐 Translate';
+      btn.textContent = '🌐 Show translation';
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -301,9 +301,9 @@
     const existing = btn.nextElementSibling;
     if (existing && existing.classList.contains('tt-translate-result')) {
       existing.remove();
+      btn.textContent = '🌐 Show translation';
       return;
     }
-    const originalLabel = btn.textContent;
     btn.textContent = '🌐 Translating...';
     const lang = getLang();
 
@@ -311,14 +311,14 @@
       text,
       lang,
       (translated) => {
-        btn.textContent = originalLabel;
+        btn.textContent = '🌐 Hide translation';
         const div = document.createElement('div');
         div.className = 'tt-translate-result';
         div.textContent = translated;
         btn.insertAdjacentElement('afterend', div);
       },
       (errMsg) => {
-        btn.textContent = originalLabel;
+        btn.textContent = '🌐 Show translation';
         const div = document.createElement('div');
         div.className = 'tt-translate-result';
         div.textContent = '⚠️ Translation failed: ' + errMsg;
