@@ -52,6 +52,9 @@ Uses Google Translate's unofficial endpoint (`translate.googleapis.com`), with a
 
 
   No warranty or support
+- Tampermonkey互換の機能拡張でも動くと思われるがテストはしていない
+
+  It seems to work with Tampermonkey compatible extensions, but I haven't tested it
 - 非公式APIを使用しているため、Google側の仕様変更により動作しなくなる可能性がある
 
   Relies on an unofficial API and may break if Google changes its response format
