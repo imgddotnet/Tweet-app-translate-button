@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tweet.app Translate Button
 // @namespace    imgd.net
-// @version      2.1
+// @version      2.2
 // @description  各ツイートに翻訳ボタンを追加し、選択言語へワンクリック翻訳
 // @match        https://app.tweet.app/*
 // @grant        GM_setValue
@@ -152,7 +152,10 @@
       if (code === getLang()) opt.selected = true;
       readSel.appendChild(opt);
     });
-    readSel.addEventListener('change', () => setLang(readSel.value));
+    readSel.addEventListener('change', () => {
+      setLang(readSel.value);
+      refreshAllBtnLabels();
+    });
 
     const composeSel = document.createElement('select');
     composeSel.className = 'tt-lang-select';
@@ -163,7 +166,10 @@
       if (code === getComposeLang()) opt.selected = true;
       composeSel.appendChild(opt);
     });
-    composeSel.addEventListener('change', () => setComposeLang(composeSel.value));
+    composeSel.addEventListener('change', () => {
+      setComposeLang(composeSel.value);
+      refreshAllBtnLabels();
+    });
 
     bar.appendChild(readSel);
     bar.appendChild(composeSel);
@@ -194,7 +200,8 @@
 
       const btn = document.createElement('div');
       btn.className = 'tt-translate-btn';
-      btn.textContent = '🌐 Show translation';
+      btn.dataset.ttState = 'idle';
+      updateTranslateBtnLabel(btn);
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -203,6 +210,31 @@
 
       p.insertAdjacentElement('afterend', btn);
     });
+  }
+
+  function updateTranslateBtnLabel(btn) {
+    const lang = getLang();
+    if (btn.dataset.ttState === 'shown') {
+      btn.textContent = `🌐 Hide translation (${lang})`;
+    } else if (btn.dataset.ttState === 'loading') {
+      btn.textContent = `🌐 Translating... (${lang})`;
+    } else {
+      btn.textContent = `🌐 Show translation (${lang})`;
+    }
+  }
+
+  function updateComposeBtnLabel(btn) {
+    const lang = getComposeLang();
+    if (btn.dataset.ttState === 'loading') {
+      btn.textContent = `🌐 Translating... (${lang})`;
+    } else {
+      btn.textContent = `🌐 Insert translation (${lang})`;
+    }
+  }
+
+  function refreshAllBtnLabels() {
+    document.querySelectorAll('.tt-translate-btn').forEach(updateTranslateBtnLabel);
+    document.querySelectorAll('.tt-compose-btn').forEach(updateComposeBtnLabel);
   }
 
   function buildUrl(endpoint, text, lang) {
@@ -301,24 +333,28 @@
     const existing = btn.nextElementSibling;
     if (existing && existing.classList.contains('tt-translate-result')) {
       existing.remove();
-      btn.textContent = '🌐 Show translation';
+      btn.dataset.ttState = 'idle';
+      updateTranslateBtnLabel(btn);
       return;
     }
-    btn.textContent = '🌐 Translating...';
+    btn.dataset.ttState = 'loading';
+    updateTranslateBtnLabel(btn);
     const lang = getLang();
 
     callTranslateApi(
       text,
       lang,
       (translated) => {
-        btn.textContent = '🌐 Hide translation';
+        btn.dataset.ttState = 'shown';
+        updateTranslateBtnLabel(btn);
         const div = document.createElement('div');
         div.className = 'tt-translate-result';
         div.textContent = translated;
         btn.insertAdjacentElement('afterend', div);
       },
       (errMsg) => {
-        btn.textContent = '🌐 Show translation';
+        btn.dataset.ttState = 'idle';
+        updateTranslateBtnLabel(btn);
         const div = document.createElement('div');
         div.className = 'tt-translate-result';
         div.textContent = '⚠️ Translation failed: ' + errMsg;
@@ -349,7 +385,8 @@
 
       const btn = document.createElement('div');
       btn.className = 'tt-compose-btn';
-      btn.textContent = '🌐 Insert translation';
+      btn.dataset.ttState = 'idle';
+      updateComposeBtnLabel(btn);
 
       let resultEl = null;
 
@@ -360,15 +397,16 @@
         const text = getComposeText(el).trim();
         if (!text) return;
 
-        const originalLabel = btn.textContent;
-        btn.textContent = '🌐 Translating...';
+        btn.dataset.ttState = 'loading';
+        updateComposeBtnLabel(btn);
         const lang = getComposeLang();
 
         callTranslateApi(
           text,
           lang,
           (translated) => {
-            btn.textContent = originalLabel;
+            btn.dataset.ttState = 'idle';
+            updateComposeBtnLabel(btn);
             if (!resultEl) {
               resultEl = document.createElement('div');
               resultEl.className = 'tt-compose-result';
@@ -383,7 +421,8 @@
             resultEl.textContent = translated;
           },
           (errMsg) => {
-            btn.textContent = originalLabel;
+            btn.dataset.ttState = 'idle';
+            updateComposeBtnLabel(btn);
             if (!resultEl) {
               resultEl = document.createElement('div');
               resultEl.className = 'tt-compose-result';
