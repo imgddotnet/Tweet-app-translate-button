@@ -9,6 +9,7 @@
 // @grant        GM_xmlhttpRequest
 // @connect      translate.googleapis.com
 // @connect      clients5.google.com
+// @icon         https://app.tweet.app/assets/brand/bird-blue.svg
 // @run-at       document-idle
 // ==/UserScript==
 
