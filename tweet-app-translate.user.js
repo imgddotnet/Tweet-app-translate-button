@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tweet.app Translate Button
 // @namespace    imgd.net
-// @version      2.2
+// @version      2.3
 // @description  各ツイートに翻訳ボタンを追加し、選択言語へワンクリック翻訳
 // @match        https://app.tweet.app/*
 // @grant        GM_setValue
@@ -364,14 +364,21 @@
     );
   }
 
-  // ---- 投稿(compose)欄の翻訳機能 ----
-  // "What's happening" というplaceholder/aria-labelを持つtextareaまたはcontenteditable要素を対象にする
+  // ---- 投稿(compose)欄および返信(reply)欄の翻訳機能 ----
   function getComposeEls() {
     const all = Array.from(document.querySelectorAll('textarea, [contenteditable="true"]'));
     return all.filter((el) => {
       const ph = (el.getAttribute('placeholder') || el.getAttribute('aria-placeholder') || '').toLowerCase();
       const label = (el.getAttribute('aria-label') || '').toLowerCase();
-      return ph.includes('happening') || label.includes('happening');
+      const name = (el.getAttribute('name') || '').toLowerCase();
+
+      return (
+        ph.includes('happening') ||
+        label.includes('happening') ||
+        ph.includes('reply') ||
+        label.includes('reply') ||
+        name === 'compose-text'
+      );
     });
   }
 
