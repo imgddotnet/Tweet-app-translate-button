@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tweet.app Translate Button
 // @namespace    imgd.net
-// @version      2.3
+// @version      2.4
 // @description  各ツイートに翻訳ボタンを追加し、選択言語へワンクリック翻訳
 // @match        https://app.tweet.app/*
 // @grant        GM_setValue
@@ -28,6 +28,8 @@
     ['es', 'Español'],
     ['fr', 'Français'],
     ['de', 'Deutsch'],
+    ['it', 'Italiano'],
+    ['pt', 'Português'],
   ];
 
   // ブラウザ/OSの言語設定から対応言語コードを推定(例: "ja-JP" -> "ja", "zh-Hant-TW" -> "zh-TW")
@@ -95,10 +97,21 @@
       font-size: 12px;
       box-shadow: 0 1px 4px rgba(0,0,0,.15);
     }
+    .tt-lang-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tt-lang-label {
+      font-size: 12px;
+      color: rgb(101,119,134);
+      white-space: nowrap;
+    }
     .tt-lang-bar {
       display: flex;
       flex-direction: row;
-      gap: 8px;
+      align-items: center;
+      gap: 12px;
       margin-bottom: 12px;
     }
     .tt-lang-bar.tt-fixed-fallback {
@@ -158,12 +171,19 @@
       refreshAllBtnLabels();
     });
 
+    const composeGroup = document.createElement('div');
+    composeGroup.className = 'tt-lang-group';
+
+    const composeLabel = document.createElement('span');
+    composeLabel.className = 'tt-lang-label';
+    composeLabel.textContent = 'Translate to:';
+
     const composeSel = document.createElement('select');
     composeSel.className = 'tt-lang-select';
     LANGS.forEach(([code, label]) => {
       const opt = document.createElement('option');
       opt.value = code;
-      opt.textContent = 'Translate to: ' + label;
+      opt.textContent = label;
       if (code === getComposeLang()) opt.selected = true;
       composeSel.appendChild(opt);
     });
@@ -172,8 +192,11 @@
       refreshAllBtnLabels();
     });
 
+    composeGroup.appendChild(composeLabel);
+    composeGroup.appendChild(composeSel);
+
     bar.appendChild(readSel);
-    bar.appendChild(composeSel);
+    bar.appendChild(composeGroup);
 
     const heading = findWhoToFollowHeading();
     if (heading) {
